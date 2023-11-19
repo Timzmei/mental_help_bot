@@ -1,0 +1,69 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+}
+
+.container {
+	max-width: 390px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 20px;
+}
+    
+form {
+    max-width: 390px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.question {
+    margin-bottom: 15px;
+    /* font-weight: bold; */
+    /* color: #013558; */
+}
+
+.bold-red-text {
+    font-weight: bold;
+    color: #013558;
+}
+
+label {
+    display: block; /* Сделать label блочным элементом, чтобы каждый вопрос с ответами отображался на отдельной строке */
+    font-style: italic;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+button {
+    display: block;
+    margin: 0 auto;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#result {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #333;
+}
