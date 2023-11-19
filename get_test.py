@@ -19,6 +19,8 @@ from datetime import datetime
 from aiogram.utils import keyboard
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from main import session, bot, BOT_TOKEN
+
 user_scores = {}
 current_question = 1
 
@@ -34,22 +36,23 @@ async def buy_process(web_app_message):
     print(from_user_username, web_app_message.web_app_data.data)
     # await web_app_message.answer(f'{web_app_message.data.data}')
     await web_app_message.answer(f'Тест завершен.\nТестировался: @{from_user_username}\n{test_info}', reply_markup=ReplyKeyboardRemove())
-
+    await bot.send_message(244063420, f'Тест завершен.\nТестировался: @{from_user_username}\n{test_info}', reply_markup=ReplyKeyboardRemove())
+    
 @router.message(Command("test"))
 async def command_webview(message: Message):
     param_name = "test_BDI"
     kb = [
         [
             types.KeyboardButton(text="Шкала депрессии Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/pto_bot?paramName=test_BDI"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI"))
         ],
         [
             types.KeyboardButton(text="Шкала тревоги Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/pto_bot?paramName=test_BAI"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BAI"))
         ],
         [
             types.KeyboardButton(text="Шкала безнадежности Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/pto_bot?paramName=test_BHI"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BHI"))
         ],
     ]
     keyboard = types.ReplyKeyboardMarkup(

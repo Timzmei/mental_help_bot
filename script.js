@@ -128,7 +128,8 @@ document.getElementById("submit").addEventListener("click", function () {
 });
 
 Telegram.WebApp.onEvent("mainButtonClicked", function(){
-    console.log(resultText);
+    // console.log(resultText);
+    
     tg.sendData(`Название теста: ${fullTestName}, \nРезультат: ${totalScore};\n${resultText}`);
     Telegram.WebApp.close();
 
