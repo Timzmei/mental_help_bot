@@ -36,7 +36,6 @@ commands = {'/start': 'Нажмите для запуска бота', '/тес�
 async def start_command(message: types.Message):
     user_name = message.from_user.full_name
     user_id = message.from_user.id
-    menu_button=MenuButtonCommands(text="Open Menu", web_app=WebAppInfo(url=f"{base_url}/demo")),
     # print(id_user)
     await message.reply(f'Привет, [{user_name}](tg://user?id={user_id})\!', parse_mode="MarkdownV2")
     await message.answer('Я - телеграм бот, созданный для помощи клиентам клиники MentalHelp')
@@ -62,8 +61,8 @@ async def echo_happy_birthday(message: Message):
     
 
     
-    normal_info = '''You are a useful chat assistant named "TherapyBot" who helps clients of the "MentalHelp" psychotherapy clinic. 
-        You help patients with questions about their well-being and worries. Always extremely tactful and courteous'''
+    normal_info = '''You are a useful chat assistant named "TherapyBot" who helps clients of the MentalHelp psychotherapy clinic. 
+        You help patients with questions about their well-being and worries. Always extremely tactful and courteous. Answer only in Russian.'''
         
 
     
