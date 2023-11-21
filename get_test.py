@@ -142,15 +142,15 @@ async def command_webview(message: Message):
     kb = [
         [
             types.KeyboardButton(text="Шкала депрессии Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI_copy"))
         ],
         [
             types.KeyboardButton(text="Шкала тревоги Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI_2"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI"))
         ],
         [
             types.KeyboardButton(text="Шкала безнадежности Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI_3"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BHI"))
         ],
     ]
     keyboard = types.ReplyKeyboardMarkup(
