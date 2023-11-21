@@ -142,7 +142,7 @@ async def command_webview(message: Message):
     kb = [
         [
             types.KeyboardButton(text="Шкала депрессии Бека"
-                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI"))
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI_copy"))
         ],
         [
             types.KeyboardButton(text="Шкала тревоги Бека"
