@@ -10,7 +10,7 @@ let p = document.createElement("p");
 try {
     let firstName = tg.initDataUnsafe.user.first_name;
     let lastName = tg.initDataUnsafe.user.last_name;
-    p.innerText = `${lastName}${lastName}`;
+    p.innerText = `${firstName}${lastName}`;
 } catch (error) {
     p.innerText = `Таинственный Незнакомец`;
 }
@@ -127,8 +127,6 @@ document.getElementById("submit").addEventListener("click", function () {
     
 });
 
-
-
 Telegram.WebApp.onEvent("mainButtonClicked", function(){
     selectedAnswers = [];
 
@@ -143,7 +141,6 @@ Telegram.WebApp.onEvent("mainButtonClicked", function(){
             selectedAnswers.push({ question: questionText, answer: answerText });
         }
     }
-    console.log(resultText);
     selectedAnswers.push({ test_name: fullTestName, result: totalScore, text_result: resultText });
     tg.sendData(selectedAnswers);
     Telegram.WebApp.close();
