@@ -135,6 +135,7 @@ async def get_answer(web_app_message):
     await web_app_message.answer(f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {test_name}\nРезультат: {test_result}\n{text_result}', reply_markup=ReplyKeyboardRemove())
     # await bot.send_message(1563111150, f'Тест завершен.\nТестировался: {from_user_username}, id: {user_id} \n{test_info}')
     await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {test_name}\nРезультат: {test_result}\n{text_result}')
+    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {test_name}\nРезультат: {test_result}\n{text_result}')
 
 @router.message(Command("test"))
 async def command_webview(message: Message):
