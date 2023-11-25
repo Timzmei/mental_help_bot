@@ -54,7 +54,8 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         nonlocal y_position
         c.setFillColor(font_color)
         c.setFont(font, font_size)
-        c.drawString(x_position, ypos, text)
+        if y_position >= 50:  
+            c.drawString(x_position, ypos, text)
         if y_position < 50:  # Если информация не помещается, создаем новую страницу
             c.showPage()
             c.setFillColor(font_color)
@@ -187,6 +188,9 @@ async def get_answer(web_app_message):
     test_name = test_info.get('test_name', 'Название теста не указано')
     user_name = test_info.get('name', 'Имя не указано')
     phone = test_info.get('phone', 'Номер телефона не указан')
+    
+    print(f'data_test: {data_test}')
+    print(f'test_info: {test_info}')
     # test_result = test_info.get('result', 'Результат не указан')
     # text_result = test_info.get('text_result', 'Текстовый результат не указан')
     
