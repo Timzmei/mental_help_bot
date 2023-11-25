@@ -230,6 +230,10 @@ async def command_webview(message: Message):
             types.KeyboardButton(text="Шкала безнадежности Бека"
                                  , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BHI"))
         ],
+        [
+            types.KeyboardButton(text="Опросник выраженности психопатологической симптоматики"
+                                 , web_app=WebAppInfo(url=f"https://timzmei.github.io/mental_help_bot?paramName=SCL_90_R"))
+        ],
     ]
     keyboard = types.ReplyKeyboardMarkup(
         keyboard=kb,

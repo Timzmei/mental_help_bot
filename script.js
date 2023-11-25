@@ -147,7 +147,7 @@ document.getElementById("submit").addEventListener("click", function () {
         
     }
     
-    answersDictionary.push({ test_name: selectTest });
+    answersDictionary.push({ test_name: selectTest, name: userName, phone: userPhone }); // Добавляем имя и телефон в данные
 
     if (selectTest != "SCL_90_R") {
         const resultDiv = document.getElementById("result");
