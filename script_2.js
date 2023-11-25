@@ -10,7 +10,7 @@ let p = document.createElement("p");
 try {
     let firstName = tg.initDataUnsafe.user.first_name;
     let lastName = tg.initDataUnsafe.user.last_name;
-    p.innerText = `${lastName}${lastName}`;
+    p.innerText = `${firstName}${lastName}`;
 } catch (error) {
     p.innerText = `Таинственный Незнакомец`;
 }
@@ -25,6 +25,9 @@ let totalScore = 0;
 let resultText = ``;
 let questions_count = 0;
 let fullTestName = '';
+
+let answersDictionary = {};
+
 // let selectedValue = false;
 
 
@@ -85,37 +88,46 @@ fetch(`${selectTest}.json`)
         console.error("Ошибка при загрузке теста: " + error);
     });
 
-function getResultText(score, resultRanges) {
-    for (const range of resultRanges) {
-        if (score >= range.minScore && score <= range.maxScore) {
-            return range.resultText;
+
+function getResultText(score, data) {
+    if (selectTest == "SCL_90_R") {
+        return "Результат теста будет у вашего лечащего врача"
+    } else {
+        for (const range of data.resultRanges) {
+            if (score >= range.minScore && score <= range.maxScore) {
+                return range.resultText;
+            }
         }
     }
+    
     return "Результат не определен"; // Если результат не попадает ни в один интервал
 }
 
 document.getElementById("submit").addEventListener("click", function () {
     totalScore = 0;
+    let marker = true;
 
     for (let i = 1; i <= questions_count; i++) {
         const selectedValue = document.querySelector(`input[name="q${i}"]:checked`);
-
+    
         if (!selectedValue) {
             alert("Пожалуйста, ответьте на все вопросы.");
+            marker = false;
             return;
         } else {
-            tg.MainButton.setText("Получить результат");
-            tg.MainButton.show();
+            answersDictionary[`Вопрос ${i}`] = selectedValue.value; // Здесь номер ответа сохраняется в словаре
         }
-
         totalScore += parseInt(selectedValue.value);
     }
+    
+    tg.MainButton.setText("Получить результат");
+    tg.MainButton.show();
 
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
-    // tg.sendData(`resultText`);
+    if (selectTest != "SCL_90_R") {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
 
-    fetch(`${selectTest}.json`)
+        fetch(`${selectTest}.json`)
         .then(response => response.json())
         .then(data => {
             // Получаем результат теста на основе баллов
@@ -123,13 +135,31 @@ document.getElementById("submit").addEventListener("click", function () {
             resultDiv.innerHTML += `<br>${resultText}`;
             // Выводим результат на странице или делаем с ним что-то еще
             // console.log(resultText);
-    });
+        });
+    }
+    
+
+    console.log(answersDictionary);
     
 });
 
 Telegram.WebApp.onEvent("mainButtonClicked", function(){
-    console.log(resultText);
-    tg.sendData(`Название теста: ${fullTestName}, \nРезультат: ${totalScore};\n${resultText}`);
+    // selectedAnswers = [];
+
+    // for (let i = 1; i <= questions_count; i++) {
+    //     const selectedValue = document.querySelector(`input[name="q${i}"]:checked`);
+
+    //     if (!selectedValue) {
+    //         selectedAnswers.push({ question: `Вопрос ${i}`, answer: 'Ответ не выбран' });
+    //     } else {
+    //         const questionText = document.querySelector(`.question:nth-child(${i}) p`).textContent;
+    //         const answerText = selectedValue.parentElement.textContent.trim();
+    //         selectedAnswers.push({ question: questionText, answer: answerText });
+    //     }
+    // }
+    // selectedAnswers.push({ test_name: fullTestName, result: totalScore, text_result: resultText });
+    tg.sendData(answersDictionary);
     Telegram.WebApp.close();
 
 });
+

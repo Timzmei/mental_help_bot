@@ -39,64 +39,138 @@ pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'dejavu-sans.bold.ttf'))
 pdfmetrics.registerFont(TTFont('DejaVu-Italic', 'dejavu-sans.oblique.ttf'))  
 
 # Создаем PDF-файл
-def create_pdf(test_name, test_result, text_result, questions_answers, from_user_username, from_user_id, doctor_name='', clinic_logo='', clinic_name='MentalHelp'):
+def create_pdf(test_data, answers_array, result_test, from_user_username, from_user_id, test_name, user_name, phone):    
     now = datetime.now()
     current_date = now.strftime("%d.%m.%Y")
-
-    pdf_filename = f"Результаты теста.pdf"  # Имя PDF-файла
-
-    c = canvas.Canvas(pdf_filename, pagesize=A4)
-
-
-    # Устанавливаем цвет шрифта
-    c.setFillColor(black)
-    # Устанавливаем стиль (жирность и курсив) для шрифта
-    c.setFont("DejaVu-Bold", 10)
+    
+    pdf_filename = "Результаты теста.pdf"
+    
+    c = canvas.Canvas(pdf_filename, pagesize=letter)
+    # Устанавливаем цвет шрифта    
+    y_position = 750  # Начальная позиция на странице
+    
+    # Добавление информации на страницу
+    def add_info(text, x_position, ypos, font, font_size, font_color):
+        nonlocal y_position
+        c.setFillColor(font_color)
+        c.setFont(font, font_size)
+        c.drawString(x_position, ypos, text)
+        if y_position < 50:  # Если информация не помещается, создаем новую страницу
+            c.showPage()
+            c.setFillColor(font_color)
+            c.setFont(font, font_size)
+            y_position = 750  # Сбрасываем позицию на новой странице
+            c.drawString(x_position, y_position, text)
+        y_position -= 20
+    
     
     # Добавляем информацию о тестируемом, лечащем враче и клинике
-    c.rect(170, 815, 250, 18)  # Координаты и размеры рамки
-    c.drawString(45, 820, f"Имя тестируемого:")
-    c.rect(170, 795, 250, 18)  # Координаты и размеры рамки
-    c.drawString(45, 800, f"Лечащий врач:")  # Поле для заполнения
-    # Добавляем информацию о тесте и результатах
-    c.drawString(45, 760, f"Дата прохождения:")
-    c.drawString(45, 730, f"Название теста:")
-    c.drawString(45, 715, f"Результат:")
-    c.drawString(45, 700, f"Описание результата:")
     
-    c.setFont("DejaVu", 9)
-    c.drawString(180, 820, f"{from_user_username}")
-    c.drawString(180, 760, f"{current_date}")
-    c.drawString(180, 730, f"{test_name}")
-    c.drawString(180, 715, f"{test_result}")
-    c.drawString(180, 700, f"{text_result}")
+    add_info(f"Имя тестируемого:", 45, y_position, "DejaVu-Bold", 10, black)
+    y_position += 20
+    add_info(f"{from_user_username}, {phone}", 180, y_position, "DejaVu", 9, black)
+    c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
+
+    add_info(f"Лечащий врач:", 45, y_position, "DejaVu-Bold", 10, black)  # Поле для заполнения
+    c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
+    # Добавляем информацию о тесте и результатах
+    add_info(f"Дата прохождения:", 45, y_position, "DejaVu-Bold", 10, black)
+    y_position += 20
+    add_info(f"{current_date}", 180, y_position, "DejaVu", 9, black)
+    add_info(f"Название теста:", 45, y_position, "DejaVu-Bold", 10, black)
+    y_position += 20
+    add_info(f"{test_name}", 180, y_position, "DejaVu", 9, black)
+  
     # Добавляем логотип клиники
-    c.drawImage('MentalHelp.jpg', 450, 735, width=100, height=100)
-
-    # Добавляем информацию о вопросах и ответах
-    y = 670
-    for qa in questions_answers:
-        question = qa['question']
-        answer = qa['answer']
+    c.drawImage('MentalHelp.jpg', 450, 710, width=80, height=80)
+       
+    add_info("Результаты теста:", 45, y_position, "DejaVu-Bold", 10, black)
+    
+    for scale, score in result_test.items():
+        add_info(f"{scale}:", 45, y_position, "DejaVu-Bold", 10, black)
+        y_position += 20
+        add_info(f"{score}", 180, y_position, "DejaVu", 9, black)
         
-        # Устанавливаем цвет шрифта
-        c.setFillColor(blue)
-        # Устанавливаем кириллический шрифт и размер
-        c.setFont("DejaVu-Bold", 8)
-        
-        c.drawString(70, y, f"Вопрос: {question}")
-        
-        # Устанавливаем цвет шрифта
-        c.setFillColor(black)        
-        # Устанавливаем стиль (жирность и курсив) для шрифта
-        c.setFont("DejaVu-Italic", 8)
-        
-        c.drawString(100, y - 15, f"Ответ: {answer}")
-        y -= 30  # Переход на следующую строку
-
+    # Добавление вопросов и ответов из answersArray    
+    print(answers_array)
+    for i, answer_dict in enumerate(answers_array, start=1):
+        question_number = int(answer_dict['question'].split()[1]) - 1
+        question = test_data["questions"][question_number]
+        question_text = question["question"]
+        answer_index = int(answer_dict['answer'])
+        answer_text = question["answers"][answer_index]["text"]
+        add_info(f"Вопрос {i}: {question_text}", 70, y_position, "DejaVu-Bold", 8, blue)
+        add_info(f"Ответ: {answer_text}", 100, y_position, "DejaVu-Italic", 8, black)
+    
+    
+    # # Добавление общего балла (GSI), индекс PSI и индекс PDSI
+    # add_info(f"Общий балл (GSI): {total_score}", y_position)
+    # add_info(f"Индекс PSI: {psi_count}", y_position)
+    # add_info(f"Индекс PDSI: {pdsi}", y_position)
+    
     c.save()
+    print(f"PDF-файл с результатами теста создан: {pdf_filename}")
 
-    return pdf_filename
+def get_test_data(test_name):
+    # Путь к вашему JSON файлу с тестовыми данными
+    json_file_path = f'{test_name}.json'
+
+    # Загрузка данных из файла
+    with open(json_file_path, 'r', encoding='utf-8') as file:
+        test_data = json.load(file)
+    return test_data
+
+def get_result_test_scl(answersArray, test_data):
+    
+    # Суммирование баллов по каждой шкале
+    scales = test_data["keys"][0]  # Получаем ключи для шкал
+    # print(f'scales = {scales}')
+    scale_scores = {}  # Словарь для хранения баллов по каждой шкале
+    # print(f'scales.items() = {scales.items()}')
+    for scale, items in scales.items():
+        print(f'scale = {scale}')
+        print(f'items = {items}')
+
+        scale_scores[scale] = sum(1 for item in answersArray if int(item["answer"]) in items) / len(items)
+
+    # Вычисление общего балла (индекс GSI)
+    gsi_index = sum(scale_scores.values()) / len(answersArray)
+
+    # Подсчет количества пунктов от 1 до 4 (индекс PSI)
+    psi_count = sum(1 for item in answersArray if 1 <= int(item["answer"]) <= 4)
+
+    # Расчет индекса выраженности дистресса PDSI
+    pdsi_index = (gsi_index * len(answersArray)) / psi_count if psi_count != 0 else 0
+    
+    scale_scores['gsi_index'] = gsi_index
+    scale_scores['psi_count'] = psi_count
+    scale_scores['pdsi_index'] = pdsi_index
+
+    return scale_scores
+
+def get_total_scores(answersArray, test_data):
+    
+    result_test = {}
+    total_score = 0
+    
+    for answer_dict in answersArray:
+        question_number = int(answer_dict['question'].split()[1]) - 1  # Получаем номер вопроса из словаря
+        question = test_data["questions"][question_number]
+        selected_answer = next((ans for ans in question["answers"] if ans["value"] == int(answer_dict['answer'])), None)
+        if selected_answer:
+            total_score += selected_answer["value"]
+    
+    result_ranges = test_data['resultRanges']
+    result_text = ''
+
+    for result_range in result_ranges:
+        if result_range["minScore"] <= total_score <= result_range["maxScore"]:
+            result_text = result_range["resultText"]
+
+    result_test['total_score'] = total_score
+    result_test['result_text'] = result_text
+
+    return result_test
 
 
 @router.message(F.web_app_data)
@@ -104,38 +178,41 @@ async def get_answer(web_app_message):
     from_user_username = web_app_message.from_user.full_name
     from_user_id = web_app_message.from_user.id
     data_test_str = web_app_message.web_app_data.data
-    print(data_test_str)
+    print(f'data_test_str: {data_test_str}')
     data_test = json.loads(data_test_str)
-    # data_test = data_test_str
-
-    
     # Получаем информацию о тесте
     test_info = data_test[-1]
-
+    print(f'data_test: {data_test}')
+    print(f'test_info: {test_info}')
     test_name = test_info.get('test_name', 'Название теста не указано')
-    test_result = test_info.get('result', 'Результат не указан')
-    text_result = test_info.get('text_result', 'Текстовый результат не указан')
+    user_name = test_info.get('name', 'Имя не указано')
+    phone = test_info.get('phone', 'Номер телефона не указан')
+    # test_result = test_info.get('result', 'Результат не указан')
+    # text_result = test_info.get('text_result', 'Текстовый результат не указан')
     
+    file_data = get_test_data(test_name)
+    
+    full_test_name = file_data['testName']
 
     # Получаем информацию о вопросах и ответах
-    questions_answers = data_test[:-1]
-    pdf_file = create_pdf(test_name, test_result, text_result, questions_answers, from_user_username, from_user_id)
+    answers_array = data_test[:-1]
+    
+    result_test = {}
+    
+    if (test_name == 'SCL_90_R'):
+        result_test = get_result_test_scl(answers_array, file_data)
+    else:
+        result_test = get_total_scores(answers_array, file_data)
+    
+    
+    pdf_file = create_pdf(file_data, answers_array, result_test, from_user_username, from_user_id, full_test_name, user_name, phone)
 
     # Выводим информацию о тесте
-    print(f"Название теста: {test_name}")
-    print(f"Результат: {test_result}")
-    print(f"Текстовый результат: {text_result}")
-
-    # Выводим информацию о вопросах и ответах
-    for qa in questions_answers:
-        print(f"\nВопрос: {qa['question']}")
-        print(f"Ответ: {qa['answer']}")
+    print(f"Название теста: {full_test_name}")
     
-    
-    await web_app_message.answer(f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {test_name}\nРезультат: {test_result}\n{text_result}', reply_markup=ReplyKeyboardRemove())
-    # await bot.send_message(1563111150, f'Тест завершен.\nТестировался: {from_user_username}, id: {user_id} \n{test_info}')
-    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {test_name}\nРезультат: {test_result}\n{text_result}')
-    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {test_name}\nРезультат: {test_result}\n{text_result}')
+    await web_app_message.answer(f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_test}\n', reply_markup=ReplyKeyboardRemove())
+    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_test}')
+    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_test}')
 
 @router.message(Command("test"))
 async def command_webview(message: Message):
