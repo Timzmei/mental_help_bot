@@ -151,20 +151,21 @@ def get_result_test_scl(answersArray, test_data):
     # Расчет индекса выраженности дистресса PDSI
     pdsi_index = round((gsi_index * len(answersArray)) / psi_count if psi_count != 0 else 0, 2)
     
-    scale_scores['gsi_index'] = gsi_index
-    scale_scores['psi_count'] = psi_count
-    scale_scores['pdsi_index'] = pdsi_index
+    scale_scores['gsi'] = gsi_index
+    scale_scores['psi'] = psi_count
+    scale_scores['pdsi'] = pdsi_index
     
     # Форматирование результатов в строку в формате Markdown
     result_string = ''
     
     for key, value in scale_scores.items():
         if isinstance(value, float):
-            result_string += f"*{key.capitalize()}:* {value:.2f}\n"
+            value_string = f'{round(value, 2)}'
+            result_string += f"*{re.escape(key.capitalize())}:* {re.escape(value_string)}\n"
         else:
-            result_string += f"*{key.capitalize()}:* {value}\n"
+            result_string += f"*{re.escape(key.capitalize())}:* {value}\n"
 
-    return scale_scores, re.escape(result_string)
+    return scale_scores, result_string
 
 def get_total_scores(answersArray, test_data):
     

@@ -47,7 +47,7 @@ const myHeading = document.getElementById("myHeading");
 function appendInstructions() {
     const instructions = document.createElement("p");
     instructions.textContent = "Инструкция. Ниже приведен перечень проблем и жалоб, иногда возникающих у людей. Пожалуйста, читайте каждый пункт внимательно. Выберите номер того ответа, который наиболее точно описывает степень вашего дискомфорта или встревоженности в связи с той или иной проблемой в течение последней недели, включая сегодняшний день. Не пропуская ни одного пункта.";
-  
+    instructions.classList.add('highlighted-text'); // Добавляем класс для выделения текста
     form.insertBefore(instructions, document.getElementById("submit"));
 }
 
@@ -69,6 +69,9 @@ fetch(`${selectTest}.json`)
         phoneInput.type = "tel";
         phoneInput.placeholder = "Введите ваш телефон";
         phoneInput.id = "phone"; // уникальный идентификатор для телефона
+
+        nameInput.classList.add('larger-input'); // Добавляем класс для увеличения размера поля ввода имени
+        phoneInput.classList.add('larger-input'); // Добавляем класс для увеличения размера поля ввода телефона
 
         form.insertBefore(nameInput, document.getElementById("submit")); // Вставляем поля перед кнопкой "Отправить"
         form.insertBefore(phoneInput, document.getElementById("submit")); // Вставляем поля перед кнопкой "Отправить"
