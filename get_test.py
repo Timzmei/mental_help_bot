@@ -71,6 +71,10 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     y_position += 20
     add_info(f"{from_user_username}, {phone}", 180, y_position, "DejaVu", 9, black)
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
+    
+    # Добавление линий для разделения блоков информации
+    c.line(45, y_position - 40, 550, y_position - 40)
+    c.line(45, y_position - 70, 550, y_position - 70)
 
     add_info(f"Лечащий врач:", 45, y_position, "DejaVu-Bold", 10, black)  # Поле для заполнения
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
@@ -92,6 +96,9 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         y_position += 20
         add_info(f"{score}", 180, y_position, "DejaVu", 9, black)
         
+    # Добавление линий для разделения результатов
+    c.line(45, y_position - 5, 550, y_position - 5)
+            
     # Добавление вопросов и ответов из answersArray    
     print(answers_array)
     for i, answer_dict in enumerate(answers_array, start=1):
@@ -102,7 +109,8 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         answer_text = question["answers"][answer_index]["text"]
         add_info(f"Вопрос {i}: {question_text}", 70, y_position, "DejaVu-Bold", 8, blue)
         add_info(f"Ответ: {answer_text}", 100, y_position, "DejaVu-Italic", 8, black)
-    
+        # Добавление линий между каждым вопросом и ответом для лучшей разбивки
+        c.line(45, y_position - 5, 550, y_position - 5)
     
     # # Добавление общего балла (GSI), индекс PSI и индекс PDSI
     # add_info(f"Общий балл (GSI): {total_score}", y_position)
@@ -129,25 +137,33 @@ def get_result_test_scl(answersArray, test_data):
     scale_scores = {}  # Словарь для хранения баллов по каждой шкале
     # print(f'scales.items() = {scales.items()}')
     for scale, items in scales.items():
-        print(f'scale = {scale}')
-        print(f'items = {items}')
+            scale_scores[scale] = round(sum(1 for item in answersArray if int(item["answer"]) in items) / len(items), 2)
 
-        scale_scores[scale] = sum(1 for item in answersArray if int(item["answer"]) in items) / len(items)
+    
 
     # Вычисление общего балла (индекс GSI)
-    gsi_index = sum(scale_scores.values()) / len(answersArray)
+    gsi_index = round(sum(scale_scores.values()) / len(answersArray), 2)
 
     # Подсчет количества пунктов от 1 до 4 (индекс PSI)
     psi_count = sum(1 for item in answersArray if 1 <= int(item["answer"]) <= 4)
 
     # Расчет индекса выраженности дистресса PDSI
-    pdsi_index = (gsi_index * len(answersArray)) / psi_count if psi_count != 0 else 0
+    pdsi_index = round((gsi_index * len(answersArray)) / psi_count if psi_count != 0 else 0, 2)
     
     scale_scores['gsi_index'] = gsi_index
     scale_scores['psi_count'] = psi_count
     scale_scores['pdsi_index'] = pdsi_index
+    
+    # Форматирование результатов в строку в формате Markdown
+    result_string = ''
+    
+    for key, value in scale_scores.items():
+        if isinstance(value, float):
+            result_string += f"*{key.capitalize()}:* {value:.2f}\n"
+        else:
+            result_string += f"*{key.capitalize()}:* {value}\n"
 
-    return scale_scores
+    return scale_scores, result_string
 
 def get_total_scores(answersArray, test_data):
     
@@ -168,10 +184,17 @@ def get_total_scores(answersArray, test_data):
         if result_range["minScore"] <= total_score <= result_range["maxScore"]:
             result_text = result_range["resultText"]
 
+    # Округление значения общего балла до сотых
+    total_score = round(total_score, 2)
+
     result_test['total_score'] = total_score
     result_test['result_text'] = result_text
+    
+     # Форматирование результатов в строку в формате Markdown
+    result_string = f"*Баллы:* {total_score}\n*Описание:* {result_text}"
 
-    return result_test
+
+    return result_test, result_string
 
 
 @router.message(F.web_app_data)
@@ -202,11 +225,12 @@ async def get_answer(web_app_message):
     answers_array = data_test[:-1]
     
     result_test = {}
+    result_string = ''
     
     if (test_name == 'SCL_90_R'):
-        result_test = get_result_test_scl(answers_array, file_data)
+        result_test, result_string = get_result_test_scl(answers_array, file_data)
     else:
-        result_test = get_total_scores(answers_array, file_data)
+        result_test, result_string = get_total_scores(answers_array, file_data)
     
     
     pdf_file = create_pdf(file_data, answers_array, result_test, from_user_username, from_user_id, full_test_name, user_name, phone)
@@ -214,9 +238,9 @@ async def get_answer(web_app_message):
     # Выводим информацию о тесте
     print(f"Название теста: {full_test_name}")
     
-    await web_app_message.answer(f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_test}\n', reply_markup=ReplyKeyboardRemove())
-    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_test}')
-    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_test}')
+    await web_app_message.answer(f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_string}\n', reply_markup=ReplyKeyboardRemove())
+    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_string}', parse_mode="MarkdownV2")
+    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_string}', parse_mode="MarkdownV2")
 
 @router.message(Command("test"))
 async def command_webview(message: Message):

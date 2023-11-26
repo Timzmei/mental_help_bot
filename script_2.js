@@ -45,13 +45,19 @@ const myHeading = document.getElementById("myHeading");
 
 // selectTest.addEventListener("change", loadSelectedTest);
 
-
+function appendInstructions() {
+    const instructions = document.createElement("p");
+    instructions.textContent = "Инструкция. Ниже приведен перечень проблем и жалоб, иногда возникающих у людей. Пожалуйста, читайте каждый пункт внимательно. Выберите номер того ответа, который наиболее точно описывает степень вашего дискомфорта или встревоженности в связи с той или иной проблемой в течение последней недели, включая сегодняшний день. Не пропуская ни одного пункта.";
+  
+    form.insertBefore(instructions, document.getElementById("submit"));
+}
 
 fetch(`${selectTest}.json`)
     .then(response => response.json())
     .then(data => {
         fullTestName = data.testName;
         myHeading.textContent = fullTestName;
+        appendInstructions();
         // Динамически создать форму с вопросами и ответами
         data.questions.forEach((q, index) => {
             // console.log(q);
