@@ -25,6 +25,7 @@ from flask import send_file
 from aiogram.utils import keyboard
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 import json
+import re
 
 from main import bot, BOT_TOKEN
 
@@ -73,8 +74,8 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
     
     # Добавление линий для разделения блоков информации
-    c.line(45, y_position - 40, 550, y_position - 40)
-    c.line(45, y_position - 70, 550, y_position - 70)
+    # c.line(45, y_position - 40, 550, y_position - 40)
+    # c.line(45, y_position - 70, 550, y_position - 70)
 
     add_info(f"Лечащий врач:", 45, y_position, "DejaVu-Bold", 10, black)  # Поле для заполнения
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
@@ -97,7 +98,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         add_info(f"{score}", 180, y_position, "DejaVu", 9, black)
         
     # Добавление линий для разделения результатов
-    c.line(45, y_position - 5, 550, y_position - 5)
+    # c.line(45, y_position - 5, 550, y_position - 5)
             
     # Добавление вопросов и ответов из answersArray    
     print(answers_array)
@@ -110,7 +111,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         add_info(f"Вопрос {i}: {question_text}", 70, y_position, "DejaVu-Bold", 8, blue)
         add_info(f"Ответ: {answer_text}", 100, y_position, "DejaVu-Italic", 8, black)
         # Добавление линий между каждым вопросом и ответом для лучшей разбивки
-        c.line(45, y_position - 5, 550, y_position - 5)
+        # c.line(45, y_position - 5, 550, y_position - 5)
     
     # # Добавление общего балла (GSI), индекс PSI и индекс PDSI
     # add_info(f"Общий балл (GSI): {total_score}", y_position)
@@ -163,7 +164,7 @@ def get_result_test_scl(answersArray, test_data):
         else:
             result_string += f"*{key.capitalize()}:* {value}\n"
 
-    return scale_scores, result_string
+    return scale_scores, re.escape(result_string)
 
 def get_total_scores(answersArray, test_data):
     
@@ -190,8 +191,11 @@ def get_total_scores(answersArray, test_data):
     result_test['total_score'] = total_score
     result_test['result_text'] = result_text
     
+    result_test['Баллы'] = result_test.pop('total_score')
+    result_test['Описание'] = result_test.pop('result_text')
+    
      # Форматирование результатов в строку в формате Markdown
-    result_string = f"*Баллы:* {total_score}\n*Описание:* {result_text}"
+    result_string = f"*Баллы:* {total_score}\n*Описание:* {re.escape(result_text)}"
 
 
     return result_test, result_string
@@ -237,10 +241,12 @@ async def get_answer(web_app_message):
 
     # Выводим информацию о тесте
     print(f"Название теста: {full_test_name}")
+    print(f"Результат теста: {result_string}")
+
     
-    await web_app_message.answer(f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_string}\n', reply_markup=ReplyKeyboardRemove())
-    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_string}', parse_mode="MarkdownV2")
-    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: {result_string}', parse_mode="MarkdownV2")
+    await web_app_message.answer(f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}\n', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
+    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
+    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
 
 @router.message(Command("test"))
 async def command_webview(message: Message):
