@@ -67,7 +67,7 @@ fetch(`${selectTest}.json`)
 
         const phoneInput = document.createElement("input");
         phoneInput.type = "tel";
-        phoneInput.placeholder = "Введите ваш телефон";
+        phoneInput.placeholder = "Введите имя лечащего врача";
         phoneInput.id = "phone"; // уникальный идентификатор для телефона
 
         nameInput.classList.add('larger-input'); // Добавляем класс для увеличения размера поля ввода имени
@@ -131,11 +131,11 @@ document.getElementById("submit").addEventListener("click", function () {
     totalScore = 0;
     let marker = true;
     let userName = document.getElementById("username").value; // Получаем введенное имя
-    let userPhone = document.getElementById("phone").value; // Получаем введенный телефон
+    let doctor = document.getElementById("phone").value; // Получаем введенный телефон
 
     // Проверяем, заполнены ли поля имени и телефона
-    if (!userName || !userPhone) {
-        alert("Пожалуйста, введите имя и телефон.");
+    if (!userName || !doctor) {
+        alert("Пожалуйста, введите имя и имя врача.");
         return;
     }
 
@@ -157,7 +157,7 @@ document.getElementById("submit").addEventListener("click", function () {
         
     }
     
-    answersDictionary.push({ test_name: selectTest, name: userName, phone: userPhone }); // Добавляем имя и телефон в данные
+    answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor }); // Добавляем имя и телефон в данные
 
     if (selectTest != "SCL_90_R") {
         const resultDiv = document.getElementById("result");

@@ -40,7 +40,7 @@ pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'dejavu-sans.bold.ttf'))
 pdfmetrics.registerFont(TTFont('DejaVu-Italic', 'dejavu-sans.oblique.ttf'))  
 
 # Создаем PDF-файл
-def create_pdf(test_data, answers_array, result_test, from_user_username, from_user_id, test_name, user_name, phone):    
+def create_pdf(test_data, answers_array, result_test, from_user_username, from_user_id, test_name, user_name, doc_name):    
     now = datetime.now()
     current_date = now.strftime("%d.%m.%Y")
     
@@ -70,7 +70,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     
     add_info(f"Имя тестируемого:", 45, y_position, "DejaVu-Bold", 10, black)
     y_position += 20
-    add_info(f"{from_user_username}, {phone}", 180, y_position, "DejaVu", 9, black)
+    add_info(f"{from_user_username}", 180, y_position, "DejaVu", 9, black)
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
     
     # Добавление линий для разделения блоков информации
@@ -78,6 +78,8 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     # c.line(45, y_position - 70, 550, y_position - 70)
 
     add_info(f"Лечащий врач:", 45, y_position, "DejaVu-Bold", 10, black)  # Поле для заполнения
+    y_position += 20
+    add_info(f"{doc_name}", 180, y_position, "DejaVu", 9, black)
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
     # Добавляем информацию о тесте и результатах
     add_info(f"Дата прохождения:", 45, y_position, "DejaVu-Bold", 10, black)
@@ -134,11 +136,36 @@ def get_result_test_scl(answersArray, test_data):
     
     # Суммирование баллов по каждой шкале
     scales = test_data["keys"][0]  # Получаем ключи для шкал
-    # print(f'scales = {scales}')
-    scale_scores = {}  # Словарь для хранения баллов по каждой шкале
-    # print(f'scales.items() = {scales.items()}')
+    print(f'scales = {scales}')
+    # Создаем словарь для хранения баллов по каждой шкале
+    scale_scores = {}
+
+    # Проходимся по каждой шкале и считаем баллы
     for scale, items in scales.items():
-            scale_scores[scale] = round(sum(1 for item in answersArray if int(item["answer"]) in items) / len(items), 2)
+        print(f'{scale} : {items}')
+        print(answersArray)
+        # Считаем количество ответов, которые попадают в пределы данной шкалы
+        # Затем делим на общее количество пунктов в шкале и округляем результат до сотых
+        # Это дает нам средний балл по данной шкале
+        # Создаем переменную для хранения количества ответов в пределах данной шкалы
+        total_items_in_scale = 0
+
+        # Проходимся по ответам в answersArray
+        for item in answersArray:
+            print(f'{item} : {items}')
+            # Проверяем, попадает ли ответ в заданный диапазон шкалы
+            question_number = int(item['question'].split()[1])  # Получаем номер вопроса из словаря
+            if question_number in items:
+                
+                score = int(item["answer"])
+                print(f'{question_number} : {items} : {score}')
+                # Если ответ попадает в диапазон шкалы, увеличиваем счетчик на 1
+                total_items_in_scale += score
+        average_score = total_items_in_scale / len(items)
+        rounded_average_score = round(average_score, 2)
+
+        # Сохраняем округленное значение в словаре для данной шкалы
+        scale_scores[scale] = rounded_average_score
 
     
 
@@ -173,11 +200,8 @@ def get_total_scores(answersArray, test_data):
     total_score = 0
     
     for answer_dict in answersArray:
-        question_number = int(answer_dict['question'].split()[1]) - 1  # Получаем номер вопроса из словаря
-        question = test_data["questions"][question_number]
-        selected_answer = next((ans for ans in question["answers"] if ans["value"] == int(answer_dict['answer'])), None)
-        if selected_answer:
-            total_score += selected_answer["value"]
+        question_number = int(answer_dict['answer']) 
+        total_score += question_number
     
     result_ranges = test_data['resultRanges']
     result_text = ''
@@ -215,7 +239,7 @@ async def get_answer(web_app_message):
     print(f'test_info: {test_info}')
     test_name = test_info.get('test_name', 'Название теста не указано')
     user_name = test_info.get('name', 'Имя не указано')
-    phone = test_info.get('phone', 'Номер телефона не указан')
+    doc_name = test_info.get('doc', 'Имя врача не указано')
     
     print(f'data_test: {data_test}')
     print(f'test_info: {test_info}')
@@ -238,7 +262,7 @@ async def get_answer(web_app_message):
         result_test, result_string = get_total_scores(answers_array, file_data)
     
     
-    pdf_file = create_pdf(file_data, answers_array, result_test, from_user_username, from_user_id, full_test_name, user_name, phone)
+    pdf_file = create_pdf(file_data, answers_array, result_test, from_user_username, from_user_id, full_test_name, user_name, doc_name)
 
     # Выводим информацию о тесте
     print(f"Название теста: {full_test_name}")
