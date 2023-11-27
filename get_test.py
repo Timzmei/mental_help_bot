@@ -157,7 +157,7 @@ def get_result_test_scl(answersArray, test_data):
             question_number = int(item['question'].split()[1])  # Получаем номер вопроса из словаря
             if question_number in items:
                 
-                score = int(item["answer"]) - 1
+                score = int(item["answer"])
                 print(f'{question_number} : {items} : {score}')
                 # Если ответ попадает в диапазон шкалы, увеличиваем счетчик на 1
                 total_items_in_scale += score
