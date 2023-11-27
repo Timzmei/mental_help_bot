@@ -66,7 +66,7 @@ fetch(`${selectTest}.json`)
         nameInput.id = "username"; // уникальный идентификатор для имени
 
         const phoneInput = document.createElement("input");
-        phoneInput.type = "tel";
+        phoneInput.type = "text";
         phoneInput.placeholder = "Введите имя лечащего врача";
         phoneInput.id = "phone"; // уникальный идентификатор для телефона
 
