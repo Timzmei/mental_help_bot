@@ -168,9 +168,14 @@ def get_result_test_scl(answersArray, test_data):
         scale_scores[scale] = rounded_average_score
 
     
-
+    gsi_index = 0.0
     # Вычисление общего балла (индекс GSI)
-    gsi_index = round(sum(scale_scores.values()) / len(answersArray), 2)
+    for i in answersArray:
+        gsi_index += int(i["answer"])
+        
+    gsi_index = round(gsi_index / len(answersArray), 2)
+    
+    # gsi_index = round(sum(scale_scores.values()) / len(answersArray), 2)
 
     # Подсчет количества пунктов от 1 до 4 (индекс PSI)
     psi_count = sum(1 for item in answersArray if 1 <= int(item["answer"]) <= 4)
