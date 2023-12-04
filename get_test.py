@@ -67,6 +67,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
             # y_position -= 20
             if y_position < 50 and ypos < 50:
                 c.showPage()
+                c.setFillColor(font_color)
                 c.setFont(font, font_size)
                 y_position = 750
                 c.drawString(100, y_position, line)
