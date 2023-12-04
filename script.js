@@ -141,6 +141,8 @@ fetch(`${selectTest}.json`)
                         question.answers.forEach((answer) => {
                             const answerInput = document.createElement("input");
                             answerInput.type = "text";
+                            answerInput.classList.add('larger-input'); // Добавляем класс для увеличения размера поля ввода имени
+
                             answerInput.name = `section-${indexS}-${indexQ + 1}`;
                             answerInput.placeholder = answer.text
 
