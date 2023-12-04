@@ -270,6 +270,39 @@ def get_total_scores(answersArray, test_data):
 
     return result_test, result_string
 
+def get_scores_hcl(answersArray, test_data):
+    
+    result_test = {}
+    total_score = 0
+    for i, answer_dict in enumerate(answersArray, start=1):
+        
+        sections_number = int(answer_dict['section'])
+        
+        if sections_number == 2:
+            total_score += int(answer_dict['answer'])
+        
+    result_ranges = test_data['resultRanges']
+    result_text = ''
+
+    for result_range in result_ranges:
+        if result_range["minScore"] <= total_score <= result_range["maxScore"]:
+            result_text = result_range["resultText"]
+
+    # Округление значения общего балла до сотых
+    total_score = round(total_score, 2)
+
+    result_test['total_score'] = total_score
+    result_test['result_text'] = result_text
+    
+    result_test['Баллы'] = result_test.pop('total_score')
+    result_test['Описание'] = result_test.pop('result_text')
+    
+     # Форматирование результатов в строку в формате Markdown
+    result_string = f"*Баллы:* {total_score}\n*Описание:* {re.escape(result_text)}"
+
+
+    return result_test, result_string
+
 
 @router.message(F.web_app_data)
 async def get_answer(web_app_message):
@@ -304,9 +337,7 @@ async def get_answer(web_app_message):
     if (test_name == 'SCL_90_R'):
         result_test, result_string = get_result_test_scl(answers_array, file_data)
     elif (test_name == 'HCL_32'):
-        result_test = {}
-        result_test['Баллы'] = 'не учитываются'
-        result_test['Описание'] = 'Результат у лечащего врача'
+         result_test, result_string = get_scores_hcl(answers_array, file_data)
 
     else:
         result_test, result_string = get_total_scores(answers_array, file_data)
