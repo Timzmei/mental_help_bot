@@ -116,7 +116,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         question_number = int(answer_dict['question'].split()[1]) - 1
         
         print(f"answer_dict = {answer_dict}")
-        if test_name == 'Опросник гипомании HCL-32':
+        if test_name == 'Опросник гипомании HCL 32':
             sections_number = int(answer_dict['section'])
             section = test_data["sections"][sections_number]
             print(f'sec= {section}')
