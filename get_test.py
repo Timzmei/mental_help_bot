@@ -63,7 +63,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         
         for line in lines:
             c.drawString(x_position, ypos, line)
-            ypos -= 20
+            ypos -= 15
             # y_position -= 20
             if y_position < 50 and ypos < 50:
                 c.showPage()
@@ -71,7 +71,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
                 c.setFont(font, font_size)
                 y_position = 750
                 c.drawString(100, y_position, line)
-            y_position -= 20
+            y_position -= 15
     
     
     # Добавляем информацию о тестируемом, лечащем враче и клинике
