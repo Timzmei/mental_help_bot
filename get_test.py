@@ -78,7 +78,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     
     add_info(f"Имя тестируемого:", 45, y_position, "DejaVu-Bold", 10, black)
     y_position += 20
-    add_info(f"{from_user_username}", 180, y_position, "DejaVu", 9, black)
+    add_info(f"{user_name}", 180, y_position, "DejaVu", 9, black)
     c.rect(170, y_position + 15, 250, 18)  # Координаты и размеры рамки
     
     # Добавление линий для разделения блоков информации
@@ -351,9 +351,9 @@ async def get_answer(web_app_message):
     print(f"Результат теста: {result_string}")
 
     
-    await web_app_message.answer(f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}\n', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
-    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
-    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
+    await web_app_message.answer(f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {user_name}\nРезультат: \n{result_string}\n', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
+    await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
+    await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
 
 @router.message(Command("test"))
 async def command_webview(message: Message):
