@@ -39,6 +39,9 @@ web_app = WebAppInfo(url='https://timzmei.github.io/mental_help_bot')
 pdfmetrics.registerFont(TTFont('DejaVu', 'dejavu-sans.book.ttf'))  
 pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'dejavu-sans.bold.ttf'))  
 pdfmetrics.registerFont(TTFont('DejaVu-Italic', 'dejavu-sans.oblique.ttf'))  
+pdfmetrics.registerFont(TTFont('helvetica', 'helveticaneuecyr-ultralight3.ttf')) 
+pdfmetrics.registerFont(TTFont('helvetica-AG', 'AG_Helvetica.ttf')) 
+pdfmetrics.registerFont(TTFont('helvetica-Neue', 'Helvetica_Neue.ttf')) 
 
 # Создаем PDF-файл
 def create_pdf(test_data, answers_array, result_test, from_user_username, from_user_id, test_name, user_name, doc_name):    
