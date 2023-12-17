@@ -256,6 +256,7 @@ def get_total_scores(answersArray, test_data):
     total_score = 0
     
     for answer_dict in answersArray:
+        print(f'answer_dict = {answer_dict}')
         question_number = int(answer_dict['answer']) 
         total_score += question_number
     

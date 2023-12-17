@@ -218,7 +218,6 @@ document.getElementById("submit").addEventListener("click", function () {
         } else {
             answersDictionary.push({ question:`Вопрос ${i}`, answer: selectedValue.value });
             // answersDictionary[`Вопрос ${i}`] = selectedValue.value; // Здесь номер ответа сохраняется в словаре
-            answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor }); // Добавляем имя и телефон в данные
             // console.log(answersDictionary);
             
         }
@@ -234,6 +233,8 @@ document.getElementById("submit").addEventListener("click", function () {
         if (marker) {
             tg.MainButton.setText("Получить результат");
             tg.MainButton.show();
+            answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor }); // Добавляем имя и телефон в данные
+
             if (selectTest != "SCL_90_R") {
                 const resultDiv = document.getElementById("result");
                 resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
