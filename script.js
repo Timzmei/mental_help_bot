@@ -196,6 +196,7 @@ function getResultText(score, data) {
 
 document.getElementById("submit").addEventListener("click", function () {
     totalScore = 0;
+    answersDictionary = [];
     let marker = true;
     let userName = document.getElementById("username").value; // Получаем введенное имя
     let doctor = document.getElementById("phone").value; // Получаем введенный телефон
@@ -217,30 +218,39 @@ document.getElementById("submit").addEventListener("click", function () {
         } else {
             answersDictionary.push({ question:`Вопрос ${i}`, answer: selectedValue.value });
             // answersDictionary[`Вопрос ${i}`] = selectedValue.value; // Здесь номер ответа сохраняется в словаре
-            tg.MainButton.setText("Получить результат");
-            tg.MainButton.show();
+            answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor }); // Добавляем имя и телефон в данные
+            // console.log(answersDictionary);
+            
         }
 
         totalScore += parseInt(selectedValue.value);
         
         }
         
-        answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor }); // Добавляем имя и телефон в данные
+        
 
-        if (selectTest != "SCL_90_R") {
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
+        
 
-            fetch(`${selectTest}.json`)
-            .then(response => response.json())
-            .then(data => {
-                // Получаем результат теста на основе баллов
-                resultText = getResultText(totalScore, data);
-                resultDiv.innerHTML += `<br>${resultText}`;
-                // Выводим результат на странице или делаем с ним что-то еще
-                // console.log(resultText);
-            });
-        } 
+        if (marker) {
+            tg.MainButton.setText("Сфигали результат");
+            tg.MainButton.show();
+            if (selectTest != "SCL_90_R") {
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
+
+                fetch(`${selectTest}.json`)
+                .then(response => response.json())
+                .then(data => {
+                    // Получаем результат теста на основе баллов
+                    resultText = getResultText(totalScore, data);
+                    resultDiv.innerHTML += `<br>${resultText}`;
+                    // Выводим результат на странице или делаем с ним что-то еще
+                    // console.log(resultText);
+                });
+            } 
+
+        }
+
 
     } else {
         // Проходим по всем вопросам в форме
@@ -260,13 +270,18 @@ document.getElementById("submit").addEventListener("click", function () {
                         selectedValue = document.querySelector(`input[name="${userInput.name}"]:checked`);
                         if (!selectedValue) {
                             alert("Пожалуйста, ответьте на все вопросы.");
+                            marker = false;
                             return;
+                        } else {
+                            answersDictionary.push({
+                                section: index,
+                                question: `Вопрос ${qIndex + 1}`,
+                                answer: selectedValue.value  
+                            }); 
+                            
                         }
-                        answersDictionary.push({
-                        section: index,
-                        question: `Вопрос ${qIndex + 1}`,
-                        answer: selectedValue.value
-                        });
+                        
+                       
 
                     } else if (question.type == 'text') {
                         if (userInput.value.trim() !== '') {
@@ -276,9 +291,11 @@ document.getElementById("submit").addEventListener("click", function () {
                             question: `Вопрос ${qIndex + 1}`,
                             answer: selectedValue
                             });
+                            answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor });
                         } else {
                             // Если поле не заполнено
                             alert("Пожалуйста, введите количество периодов.");
+                            marker = false;
                             return;
                         }
                         
@@ -300,13 +317,13 @@ document.getElementById("submit").addEventListener("click", function () {
 
 
             });
-        answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor });
+        
 
         });
-
-        // Добавляем имя и телефон в данные
-        tg.MainButton.setText("Получить результат");
-        tg.MainButton.show();
+        if (marker) {
+            tg.MainButton.setText("Сфигали результат");
+            tg.MainButton.show();
+        }
     }
     
     

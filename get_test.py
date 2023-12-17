@@ -362,7 +362,7 @@ async def get_answer(web_app_message):
     print(f"Результат теста: {result_string}")
 
     
-    await web_app_message.answer(f'Тест завершен\.\nТестировался: {from_user_username}\nНазвание теста: {user_name}\nРезультат: \n{result_string}\n', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
+    await web_app_message.answer(f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}\n', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
     await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
     await bot.send_document(1563111150, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
 
