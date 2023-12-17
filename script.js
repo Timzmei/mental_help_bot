@@ -236,7 +236,7 @@ document.getElementById("submit").addEventListener("click", function () {
             tg.MainButton.show();
             if (selectTest != "SCL_90_R") {
                 const resultDiv = document.getElementById("result");
-                resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
+                resultDiv.innerHTML = `Получить результат: ${totalScore}`;
 
                 fetch(`${selectTest}.json`)
                 .then(response => response.json())
@@ -321,7 +321,7 @@ document.getElementById("submit").addEventListener("click", function () {
 
         });
         if (marker) {
-            tg.MainButton.setText("Сфигали результат");
+            tg.MainButton.setText("Получить результат");
             tg.MainButton.show();
         }
     }
