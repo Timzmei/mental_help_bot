@@ -118,7 +118,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     for scale, score in result_test.items():
         add_info(f"{scale}:", 45, y_position, "helvetica-Neue", 10, black)
         y_position += 20
-        add_info(f"{score}", 180, y_position, "helvetica-AG", 9, blue)
+        add_info(f"{score}", 290, y_position, "helvetica-AG", 9, blue)
 
     # Добавление линий для разделения результатов
     # c.line(45, y_position - 5, 550, y_position - 5)
