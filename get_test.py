@@ -436,31 +436,31 @@ async def command_webview(message: Message):
     kb = [
         [
             types.KeyboardButton(text="Шкала депрессии Бека", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BDI"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=test_BDI"))
         ],
         [
             types.KeyboardButton(text="Шкала тревоги Бека", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BAI"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=test_BAI"))
         ],
         [
             types.KeyboardButton(text="Шкала безнадежности Бека", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=test_BHI"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=test_BHI"))
         ],
         [
             types.KeyboardButton(text="Опросник выраженности психопатологической симптоматики", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=SCL_90_R"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=SCL_90_R"))
         ],
         [
             types.KeyboardButton(text="Опросник для выявления гипомании", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=HCL_32"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=HCL_32"))
         ],
         [
             types.KeyboardButton(text="Опросник определение степени рациональности – иррациональности мышления", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=test_IBS"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=test_IBS"))
         ],
         [
             types.KeyboardButton(text="Опросник базовых убеждений личности", web_app=WebAppInfo(
-                url=f"https://timzmei.github.io/mental_help_bot?paramName=test_WAS"))
+                url=f"https://mental-help-bot-timur-guliev-f6ca2e5abf6760059b0d1b7e320c825421.gitlab.io?paramName=test_WAS"))
         ],
     ]
     keyboard = types.ReplyKeyboardMarkup(
