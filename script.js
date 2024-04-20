@@ -235,7 +235,7 @@ document.getElementById("submit").addEventListener("click", function () {
             tg.MainButton.show();
             answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor }); // Добавляем имя и телефон в данные
 
-            if (selectTest != "SCL_90_R") {
+            if (selectTest != "SCL_90_R" or selectTest != "test_WAS") {
                 const resultDiv = document.getElementById("result");
                 resultDiv.innerHTML = `Ваш результат: ${totalScore}`;
 
@@ -292,7 +292,6 @@ document.getElementById("submit").addEventListener("click", function () {
                             question: `Вопрос ${qIndex + 1}`,
                             answer: selectedValue
                             });
-                            answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor });
                         } else {
                             // Если поле не заполнено
                             alert("Пожалуйста, введите количество периодов.");
@@ -324,6 +323,8 @@ document.getElementById("submit").addEventListener("click", function () {
         if (marker) {
             tg.MainButton.setText("Получить результат");
             tg.MainButton.show();
+            answersDictionary.push({ test_name: selectTest, name: userName, doc: doctor });
+
         }
     }
     
