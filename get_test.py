@@ -36,13 +36,14 @@ current_question = 1
 router = Router()
 web_app = WebAppInfo(url='https://timzmei.github.io/mental_help_bot')
 
-pdfmetrics.registerFont(TTFont('DejaVu', 'dejavu-sans.book.ttf'))
-pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'dejavu-sans.bold.ttf'))
-pdfmetrics.registerFont(TTFont('DejaVu-Italic', 'dejavu-sans.oblique.ttf'))
+pdfmetrics.registerFont(TTFont('DejaVu', 'fonts/dejavu-sans.book.ttf'))
+pdfmetrics.registerFont(TTFont('DejaVu-Bold', 'fonts/dejavu-sans.bold.ttf'))
 pdfmetrics.registerFont(
-    TTFont('helvetica', 'helveticaneuecyr-ultralight3.ttf'))
-pdfmetrics.registerFont(TTFont('helvetica-AG', 'AG_Helvetica.ttf'))
-pdfmetrics.registerFont(TTFont('helvetica-Neue', 'Helvetica_Neue.ttf'))
+    TTFont('DejaVu-Italic', 'fonts/dejavu-sans.oblique.ttf'))
+pdfmetrics.registerFont(
+    TTFont('helvetica', 'fonts/helveticaneuecyr-ultralight3.ttf'))
+pdfmetrics.registerFont(TTFont('helvetica-AG', 'fonts/AG_Helvetica.ttf'))
+pdfmetrics.registerFont(TTFont('helvetica-Neue', 'fonts/Helvetica_Neue.ttf'))
 
 # Создаем PDF-файл
 
@@ -65,7 +66,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
         width, height = letter
 
         lines = simpleSplit(text, font, 12, width-x_position)
-        print(lines)
+        # print(lines)
 
         for line in lines:
             if al == "center":
@@ -110,7 +111,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     # add_info(f"Название теста:", 45, y_position, "DejaVu-Bold", 10, black)
 
     # Добавляем логотип клиники
-    c.drawImage('MentalHelp.jpg', 45, 690, width=100, height=100)
+    c.drawImage('image/MentalHelp.jpg', 45, 690, width=100, height=100)
     y_position -= 20
     add_info("Результаты теста:", 290, y_position,
              "helvetica-Neue", 12, black, "center")
@@ -124,16 +125,16 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     # c.line(45, y_position - 5, 550, y_position - 5)
     y_position -= 10
     # Добавление вопросов и ответов из answersArray
-    print(answers_array)
+    # print(answers_array)
     for i, answer_dict in enumerate(answers_array, start=1):
-        print(f'i={i} : answer_dict={answer_dict}')
+        # print(f'i={i} : answer_dict={answer_dict}')
         question_number = int(answer_dict['question'].split()[1]) - 1
 
-        print(f"answer_dict = {answer_dict}")
+        # print(f"answer_dict = {answer_dict}")
         if test_name == 'Опросник гипомании HCL 32':
             sections_number = int(answer_dict['section'])
             section = test_data["sections"][sections_number]
-            print(f'sec= {section}')
+            # print(f'sec= {section}')
             question = section["questions"][question_number]
             question_text = question["question"]
             if question["type"] == "text":
@@ -141,7 +142,7 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
             else:
                 answer_index = int(answer_dict['answer'])
                 for ans in question["answers"]:
-                    print(f"ans = {ans}")
+                    # print(f"ans = {ans}")
                     # print(f"ans['text'] = {ans.text}")
                     if ans["value"] == answer_index:
                         answer_text = ans["text"]
@@ -160,11 +161,11 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
             question_text = question["question"]
             answer_index = int(answer_dict['answer'])
             for ans in question["answers"]:
-                print(f"ans = {ans}")
+                # print(f"ans = {ans}")
                 # print(f"ans['text'] = {ans.text}")
                 if ans["value"] == answer_index:
                     answer_text = ans["text"]
-                    print(f"answer_text = {answer_text}")
+                    # print(f"answer_text = {answer_text}")
                 # answer_text = question["answers"][answer_index]["text"]
             add_info(f"Вопрос {i}: {question_text}", 70,
                      y_position, "helvetica-Neue", 10, blue)
@@ -179,12 +180,12 @@ def create_pdf(test_data, answers_array, result_test, from_user_username, from_u
     # add_info(f"Индекс PDSI: {pdsi}", y_position)
 
     c.save()
-    print(f"PDF-файл с результатами теста создан: {pdf_filename}")
+    # print(f"PDF-файл с результатами теста создан: {pdf_filename}")
 
 
 def get_test_data(test_name):
     # Путь к вашему JSON файлу с тестовыми данными
-    json_file_path = f'{test_name}.json'
+    json_file_path = f'tests/{test_name}.json'
 
     # Загрузка данных из файла
     with open(json_file_path, 'r', encoding='utf-8') as file:
@@ -196,14 +197,14 @@ def get_result_test_scl(answersArray, test_data):
 
     # Суммирование баллов по каждой шкале
     scales = test_data["keys"][0]  # Получаем ключи для шкал
-    print(f'scales = {scales}')
+    # print(f'scales = {scales}')
     # Создаем словарь для хранения баллов по каждой шкале
     scale_scores = {}
 
     # Проходимся по каждой шкале и считаем баллы
     for scale, items in scales.items():
-        print(f'{scale} : {items}')
-        print(answersArray)
+        # print(f'{scale} : {items}')
+        # print(answersArray)
         # Считаем количество ответов, которые попадают в пределы данной шкалы
         # Затем делим на общее количество пунктов в шкале и округляем результат до сотых
         # Это дает нам средний балл по данной шкале
@@ -212,14 +213,14 @@ def get_result_test_scl(answersArray, test_data):
 
         # Проходимся по ответам в answersArray
         for item in answersArray:
-            print(f'{item} : {items}')
+            # print(f'{item} : {items}')
             # Проверяем, попадает ли ответ в заданный диапазон шкалы
             # Получаем номер вопроса из словаря
             question_number = int(item['question'].split()[1])
             if question_number in items:
 
                 score = int(item["answer"])
-                print(f'{question_number} : {items} : {score}')
+                # print(f'{question_number} : {items} : {score}')
                 # Если ответ попадает в диапазон шкалы, увеличиваем счетчик на 1
                 total_items_in_scale += score
         average_score = total_items_in_scale / len(items)
@@ -266,14 +267,14 @@ def get_result_test_was(answersArray, test_data):
 
     # Суммирование баллов по каждой шкале
     scales = test_data["keys"][0]  # Получаем ключи для шкал
-    print(f'scales = {scales}')
+    # print(f'scales = {scales}')
     # Создаем словарь для хранения баллов по каждой шкале
     scale_scores = {}
 
     # Проходимся по каждой шкале и считаем баллы
     for scale, items in scales.items():
-        print(f'{scale} : {items}')
-        print(answersArray)
+        # print(f'{scale} : {items}')
+        # print(answersArray)
         # Считаем количество ответов, которые попадают в пределы данной шкалы
         # Затем делим на общее количество пунктов в шкале и округляем результат до сотых
         # Это дает нам средний балл по данной шкале
@@ -282,14 +283,14 @@ def get_result_test_was(answersArray, test_data):
 
         # Проходимся по ответам в answersArray
         for item in answersArray:
-            print(f'{item} : {items}')
+            # print(f'{item} : {items}')
             # Проверяем, попадает ли ответ в заданный диапазон шкалы
             # Получаем номер вопроса из словаря
             question_number = int(item['question'].split()[1])
             if question_number in items:
 
                 score = int(item["answer"])
-                print(f'{question_number} : {items} : {score}')
+                # print(f'{question_number} : {items} : {score}')
                 # Если ответ попадает в диапазон шкалы, увеличиваем счетчик на 1
                 total_items_in_scale += score
         average_score = total_items_in_scale
@@ -311,13 +312,84 @@ def get_result_test_was(answersArray, test_data):
     return scale_scores, result_string
 
 
+def get_text_markdown(text):
+    post_text = ''
+    special_chars = ['_', '*', '[', ']',
+                     '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+
+    # Экранирование специальных символов в тексте
+    for char in special_chars:
+        post_text = text.replace('.', "\\.")
+        print(f'POST_TEXT: {post_text}')
+    print(f'TEXT: {text}')
+
+    return post_text
+
+
+def get_result_test_ibs(answersArray, test_data):
+
+    # Суммирование баллов по каждой шкале
+    scales = test_data["keys"][0]  # Получаем ключи для шкал
+    # print(f'scales = {scales}')
+    # Создаем словарь для хранения баллов по каждой шкале
+    scale_scores = {}
+
+    result_ranges = test_data['resultRanges']
+    result_text = ''
+
+    # Проходимся по каждой шкале и считаем баллы
+    for scale, items in scales.items():
+        # print(f'{scale} : {items}')
+        # print(answersArray)
+        # Считаем количество ответов, которые попадают в пределы данной шкалы
+        # Затем делим на общее количество пунктов в шкале и округляем результат до сотых
+        # Это дает нам средний балл по данной шкале
+        # Создаем переменную для хранения количества ответов в пределах данной шкалы
+        total_items_in_scale = 0
+
+        # Проходимся по ответам в answersArray
+        for item in answersArray:
+            # print(f'{item} : {items}')
+            # Проверяем, попадает ли ответ в заданный диапазон шкалы
+            # Получаем номер вопроса из словаря
+            question_number = int(item['question'].split()[1])
+            if question_number in items:
+
+                score = int(item["answer"])
+                # print(f'{question_number} : {items} : {score}')
+                # Если ответ попадает в диапазон шкалы, увеличиваем счетчик на 1
+                total_items_in_scale += score
+        average_score = total_items_in_scale
+        rounded_average_score = round(average_score, 2)
+
+        for result_range in result_ranges:
+            if result_range["minScore"] <= rounded_average_score <= result_range["maxScore"]:
+                result_text = result_range["resultText"]
+                # Специальные символы, требующие экранирования в Telegram
+
+        # Сохраняем округленное значение в словаре для данной шкалы
+        scale_scores[scale] = f'{average_score} {result_text}'
+
+    # Форматирование результатов в строку в формате Markdown
+    result_string = ''
+
+    for key, value in scale_scores.items():
+        if isinstance(value, float):
+            value_string = f'{round(value, 2)}'
+            result_string += f"*{re.escape(key.capitalize())}:* {re.escape(value_string)}\n"
+        else:
+            result_string += f"*{re.escape(key.capitalize())}:* {value}\n"
+
+    return scale_scores, 'Результат будет у лечащего врача'
+
+
 def get_total_scores(answersArray, test_data):
 
     result_test = {}
     total_score = 0
 
     for answer_dict in answersArray:
-        print(f'answer_dict = {answer_dict}')
+        # print(f'answer_dict = {answer_dict}')
         question_number = int(answer_dict['answer'])
         total_score += question_number
 
@@ -381,18 +453,18 @@ async def get_answer(web_app_message):
     from_user_username = web_app_message.from_user.full_name
     from_user_id = web_app_message.from_user.id
     data_test_str = web_app_message.web_app_data.data
-    print(f'data_test_str: {data_test_str}')
+    # print(f'data_test_str: {data_test_str}')
     data_test = json.loads(data_test_str)
     # Получаем информацию о тесте
     test_info = data_test[-1]
-    print(f'data_test: {data_test}')
-    print(f'test_info: {test_info}')
+    # print(f'data_test: {data_test}')
+    # print(f'test_info: {test_info}')
     test_name = test_info.get('test_name', 'Название теста не указано')
     user_name = test_info.get('name', 'Имя не указано')
     doc_name = test_info.get('doc', 'Имя врача не указано')
 
-    print(f'data_test: {data_test}')
-    print(f'test_info: {test_info}')
+    # print(f'data_test: {data_test}')
+    # print(f'test_info: {test_info}')
     # test_result = test_info.get('result', 'Результат не указан')
     # text_result = test_info.get('text_result', 'Текстовый результат не указан')
 
@@ -412,6 +484,9 @@ async def get_answer(web_app_message):
     elif (test_name == 'test_WAS'):
         result_test, result_string = get_result_test_was(
             answers_array, file_data)
+    elif (test_name == 'test_IBS'):
+        result_test, result_string = get_result_test_ibs(
+            answers_array, file_data)
     elif (test_name == 'HCL_32'):
         result_test, result_string = get_scores_hcl(answers_array, file_data)
 
@@ -422,8 +497,10 @@ async def get_answer(web_app_message):
                           from_user_username, from_user_id, full_test_name, user_name, doc_name)
 
     # Выводим информацию о тесте
-    print(f"Название теста: {full_test_name}")
-    print(f"Результат теста: {result_string}")
+    # print(f"Название теста: {full_test_name}")
+    # print(f"Результат теста: {result_string}")
+
+    result_string = result_string.replace('.', "\\.")
 
     await web_app_message.answer(f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}\n', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
     await bot.send_document(244063420, FSInputFile('Результаты теста.pdf'), caption=f'Тест завершен\.\nТестировался: {user_name}\nНазвание теста: {full_test_name}\nРезультат: \n{result_string}', parse_mode="MarkdownV2")
